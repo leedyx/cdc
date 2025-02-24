@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
 
@@ -19,6 +19,7 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>common</module>
+        <module>core</module>
     </modules>
 
 
@@ -29,14 +30,12 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-codec.version>1.17.2</commons-codec.version>
+        <debezium.version>3.0.7.Final</debezium.version>
         <lombok.version>1.18.30</lombok.version>
-        <async-http-client.version>2.12.3</async-http-client.version>
         <jctools.version>4.0.3</jctools.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <jsoup.version>1.16.2</jsoup.version>
-        <netty-all.version>4.1.101.Final</netty-all.version>
-        <QRGen.version>3.0.1</QRGen.version>
-        <json.path.version>2.9.0</json.path.version>
     </properties>
 
 
@@ -77,6 +76,17 @@
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
                 <version>${json.path.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.debezium</groupId>
+                <artifactId>debezium-api</artifactId>
+                <version>${debezium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.debezium</groupId>
+                <artifactId>debezium-embedded</artifactId>
+                <version>${debezium.version}</version>
             </dependency>
 
         </dependencies>
