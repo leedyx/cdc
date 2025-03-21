@@ -1,8 +1,12 @@
 package org.lee.cdc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
+import org.lee.cdc.core.Cores;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +19,8 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 public class SyncApplication {
 
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     private static Properties loadConfig() {
 
@@ -50,12 +56,14 @@ public class SyncApplication {
         try (DebeziumEngine<ChangeEvent<String, String>> engine = DebeziumEngine.create(Json.class)
                 .using(props)
                 .notifying(record -> {
-                    System.out.println(record);
+                    Cores.parse(record);
                 }).build()
         ) {
             // Run the engine asynchronously ...
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(engine);
+//            ExecutorService executor = Executors.newSingleThreadExecutor();
+//            executor.execute(engine);
+
+            engine.run();
 
 
             Thread.currentThread().join();
