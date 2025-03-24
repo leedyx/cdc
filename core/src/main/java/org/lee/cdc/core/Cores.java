@@ -21,6 +21,10 @@ public class Cores {
 
         String value = record.value();
 
+        if(StringUtils.isBlank(value)){
+            return;
+        }
+
         try {
             JsonNode event = mapper.readTree(value);
 
