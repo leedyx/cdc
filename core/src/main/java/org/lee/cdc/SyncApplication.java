@@ -3,9 +3,11 @@ package org.lee.cdc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.debezium.embedded.Connect;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
+import org.apache.kafka.connect.source.SourceRecord;
 import org.lee.cdc.core.Cores;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,10 +55,14 @@ public class SyncApplication {
 
 
         Properties props = loadConfig();
-        try (DebeziumEngine<ChangeEvent<String, String>> engine = DebeziumEngine.create(Json.class)
+        try (DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>> engine = DebeziumEngine.create(Connect.class)
                 .using(props)
                 .notifying(record -> {
-                    Cores.parse(record);
+                    //Cores.parse(record);
+                    //System.out.println(record);
+                   SourceRecord sourceRecord =  record.value();
+                   Cores.parse(sourceRecord);
+
                 }).build()
         ) {
             // Run the engine asynchronously ...
