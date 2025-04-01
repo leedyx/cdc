@@ -6,12 +6,19 @@ import io.debezium.data.Json;
 import io.debezium.data.SchemaUtil;
 import io.debezium.engine.ChangeEvent;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
+import org.lee.cdc.enums.Database;
+import org.lee.cdc.message.DdlMessage;
+import org.lee.cdc.transformer.mysql.DDLs;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class Cores {
@@ -106,88 +113,158 @@ public class Cores {
 
 
 
+
+
+
+
     public static void parse(SourceRecord record) {
 
         String topic = record.topic();
         LOGGER.info("topic: {}", topic);
 
-        Object key = record.key();
-
-
-
-        if (Objects.nonNull(key)){
-            LOGGER.info("key: {}", key);
-            if (key instanceof Struct){
-                Struct struct = (Struct) key;
-                Schema schema = struct.schema();
-                struct.schema().fields().forEach(field -> {
-                    Object fieldValue = struct.get(field);
-                    LOGGER.info("field: {} value: {}", field.name(), fieldValue);
-                });
-            }
-        }
-
-        Object value = record.value();
-        if (Objects.nonNull(value)){
-            LOGGER.info("value: {}", value);
-
-            // 新增SQL生成逻辑
-            if (value instanceof Struct) {
-                try {
-                    Struct struct = (Struct) value;
-                    // 解析操作类型
-                    String op = struct.getString("op");
-                    // 解析数据源信息
-                    Struct source = struct.getStruct("source");
-                    String dbName = source.getString("db");
-                    String tableName = source.getString("table");
-
-                    switch (op) {
-                        case "c":
-                        case "r":
-                            Struct after = struct.getStruct("after");
-                            String insertSQL = SQLS.generateInsertSQL(dbName, tableName, after);
-                            System.out.println("[INSERT SQL] " + insertSQL);
-                            break;
-                        case "u":
-                            Struct beforeUpdate = struct.getStruct("before");
-                            Struct afterUpdate = struct.getStruct("after");
-                            String updateSQL = SQLS.generateUpdateSQL(dbName, tableName, beforeUpdate, afterUpdate);
-                            System.out.println("[UPDATE SQL] " + updateSQL);
-                            break;
-                        case "d":
-                            Struct beforeDelete = struct.getStruct("before");
-                            String deleteSQL = SQLS.generateDeleteSQL(dbName, tableName, beforeDelete);
-                            System.out.println("[DELETE SQL] " + deleteSQL);
-                            break;
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("生成SQL失败: {}", e.getMessage(), e);
-                }
-            }
-
-        }
-
-
-
         Schema keySchema = record.keySchema();
+        String keyName = keySchema.name();
 
-        if (Objects.nonNull(keySchema)){
-            LOGGER.info("keySchema: {}", keySchema);
+        LOGGER.info("keyName: {}", keyName);
+
+        Database database = null;
+        if(StringUtils.contains(keyName,"mysql")){
+            database = Database.MySQL;
         }
 
-        Schema valueSchema = record.valueSchema();
-        if (Objects.nonNull(valueSchema)){
-
-            String detail = SchemaUtil.asDetailedString(valueSchema);
-
-            LOGGER.info("valueSchema: {}", detail);
-
-            String valueDetail = SchemaUtil.asDetailedString((Struct) record.value());
-
-            LOGGER.info("valueDetail: {}", valueDetail);
-
+        boolean dataChange = true;
+        if (StringUtils.endsWith(keyName,"SchemaChangeKey")){
+            dataChange = false;
         }
+
+
+        if (database == Database.MySQL && !dataChange){
+            DdlMessage res = DDLs.parseDDL(record);
+
+            LOGGER.info("res: {}", res);
+        }
+
+
+
+//        Object key = record.key();
+//
+//        if (Objects.nonNull(key)){
+//            if (key instanceof Struct){
+//                Struct struct = (Struct) key;
+//                LOGGER.info("key value detail : {}", SchemaUtil.asDetailedString(struct));
+//            }
+//
+//            Schema schema = keySchema;
+//            if (Objects.nonNull(schema)){
+//                LOGGER.info("key schema detail: {}", SchemaUtil.asDetailedString(schema));
+//            }
+//        }
+//
+//
+//        Schema valueSchema = record.valueSchema();
+//        if (Objects.nonNull(valueSchema)){
+//
+//            String detail = SchemaUtil.asDetailedString(valueSchema);
+//
+//            LOGGER.info("valueSchema: {}", detail);
+//
+//            String valueDetail = SchemaUtil.asDetailedString((Struct) record.value());
+//
+//            LOGGER.info("valueDetail: {}", valueDetail);
+//
+//        }
+
+
+
+//        if (Objects.nonNull(key)){
+//            LOGGER.info("key: {}", key);
+//            if (key instanceof Struct){
+//                Struct struct = (Struct) key;
+//                Schema schema = struct.schema();
+//                struct.schema().fields().forEach(field -> {
+//                    Object fieldValue = struct.get(field);
+//                    LOGGER.info("field: {} value: {}", field.name(), fieldValue);
+//                });
+//            }
+//        }
+//
+//        Object value = record.value();
+//        if (Objects.nonNull(value)){
+//            LOGGER.info("value: {}", value);
+//
+//            // 新增SQL生成逻辑
+//            if (value instanceof Struct) {
+//                try {
+//                    Struct struct = (Struct) value;
+//
+//                    List<Field> fieldList = struct.schema().fields();
+//                    Set<String> nameSet = fieldList.stream().map(Field::name).collect(Collectors.toSet());
+//
+//                    /**
+//                     * 首先，需要根据一些特殊字段来判断
+//                     * 数据库类型
+//                     *
+//                     * 消息类型
+//                     */
+//                    if (nameSet.contains("op")){
+//                        LOGGER.info("op: {}", struct.get("op"));
+//                    }else if (nameSet.contains("ddl")){
+//
+//                    }
+//                    struct.get("op");
+//                    // 解析操作类型
+//                    String op = struct.getString("op");
+//                    // 解析数据源信息
+//                    Struct source = struct.getStruct("source");
+//                    String dbName = source.getString("db");
+//                    String tableName = source.getString("table");
+//
+//                    switch (op) {
+//                        case "c":
+//                        case "r":
+//                            Struct after = struct.getStruct("after");
+//                            String insertSQL = SQLS.generateInsertSQL(dbName, tableName, after);
+//                            System.out.println("[INSERT SQL] " + insertSQL);
+//                            break;
+//                        case "u":
+//                            Struct beforeUpdate = struct.getStruct("before");
+//                            Struct afterUpdate = struct.getStruct("after");
+//                            String updateSQL = SQLS.generateUpdateSQL(dbName, tableName, beforeUpdate, afterUpdate);
+//                            System.out.println("[UPDATE SQL] " + updateSQL);
+//                            break;
+//                        case "d":
+//                            Struct beforeDelete = struct.getStruct("before");
+//                            String deleteSQL = SQLS.generateDeleteSQL(dbName, tableName, beforeDelete);
+//                            System.out.println("[DELETE SQL] " + deleteSQL);
+//                            break;
+//                    }
+//                } catch (Exception e) {
+//                    LOGGER.error("生成SQL失败: {}", e.getMessage(), e);
+//                }
+//            }
+//
+//        }
+//
+//
+//
+//        //Schema keySchema = record.keySchema();
+//
+//        if (Objects.nonNull(keySchema)){
+//            LOGGER.info("keySchema: {}", keySchema);
+//        }
+//
+//        Schema valueSchema = record.valueSchema();
+//        if (Objects.nonNull(valueSchema)){
+//
+//            String detail = SchemaUtil.asDetailedString(valueSchema);
+//
+//            LOGGER.info("valueSchema: {}", detail);
+//
+//            String valueDetail = SchemaUtil.asDetailedString((Struct) record.value());
+//
+//            LOGGER.info("valueDetail: {}", valueDetail);
+//
+//        }
 
 
     }
