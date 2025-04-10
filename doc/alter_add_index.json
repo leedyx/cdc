@@ -1,0 +1,465 @@
+{
+  "schema": {
+    "type": "struct",
+    "fields": [
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "field": "version"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "connector"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "name"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "ts_ms"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.data.Enum",
+            "version": 1,
+            "parameters": {
+              "allowed": "true,first,first_in_data_collection,last_in_data_collection,last,false,incremental"
+            },
+            "default": "false",
+            "field": "snapshot"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "db"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "sequence"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "ts_us"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "ts_ns"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "table"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "server_id"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "gtid"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "file"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "pos"
+          },
+          {
+            "type": "int32",
+            "optional": false,
+            "field": "row"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "thread"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "query"
+          }
+        ],
+        "optional": false,
+        "name": "io.debezium.connector.mysql.Source",
+        "field": "source"
+      },
+      {
+        "type": "int64",
+        "optional": false,
+        "field": "ts_ms"
+      },
+      {
+        "type": "string",
+        "optional": true,
+        "field": "databaseName"
+      },
+      {
+        "type": "string",
+        "optional": true,
+        "field": "schemaName"
+      },
+      {
+        "type": "string",
+        "optional": true,
+        "field": "ddl"
+      },
+      {
+        "type": "array",
+        "items": {
+          "type": "struct",
+          "fields": [
+            {
+              "type": "string",
+              "optional": false,
+              "field": "type"
+            },
+            {
+              "type": "string",
+              "optional": false,
+              "field": "id"
+            },
+            {
+              "type": "struct",
+              "fields": [
+                {
+                  "type": "string",
+                  "optional": true,
+                  "field": "defaultCharsetName"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "optional": false
+                  },
+                  "optional": true,
+                  "field": "primaryKeyColumnNames"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "struct",
+                    "fields": [
+                      {
+                        "type": "string",
+                        "optional": false,
+                        "field": "name"
+                      },
+                      {
+                        "type": "int32",
+                        "optional": false,
+                        "field": "jdbcType"
+                      },
+                      {
+                        "type": "int32",
+                        "optional": true,
+                        "field": "nativeType"
+                      },
+                      {
+                        "type": "string",
+                        "optional": false,
+                        "field": "typeName"
+                      },
+                      {
+                        "type": "string",
+                        "optional": true,
+                        "field": "typeExpression"
+                      },
+                      {
+                        "type": "string",
+                        "optional": true,
+                        "field": "charsetName"
+                      },
+                      {
+                        "type": "int32",
+                        "optional": true,
+                        "field": "length"
+                      },
+                      {
+                        "type": "int32",
+                        "optional": true,
+                        "field": "scale"
+                      },
+                      {
+                        "type": "int32",
+                        "optional": false,
+                        "field": "position"
+                      },
+                      {
+                        "type": "boolean",
+                        "optional": true,
+                        "field": "optional"
+                      },
+                      {
+                        "type": "boolean",
+                        "optional": true,
+                        "field": "autoIncremented"
+                      },
+                      {
+                        "type": "boolean",
+                        "optional": true,
+                        "field": "generated"
+                      },
+                      {
+                        "type": "string",
+                        "optional": true,
+                        "field": "comment"
+                      },
+                      {
+                        "type": "string",
+                        "optional": true,
+                        "field": "defaultValueExpression"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "optional": false
+                        },
+                        "optional": true,
+                        "field": "enumValues"
+                      }
+                    ],
+                    "optional": false,
+                    "name": "io.debezium.connector.schema.Column",
+                    "version": 1
+                  },
+                  "optional": false,
+                  "field": "columns"
+                },
+                {
+                  "type": "string",
+                  "optional": true,
+                  "field": "comment"
+                }
+              ],
+              "optional": true,
+              "name": "io.debezium.connector.schema.Table",
+              "version": 1,
+              "field": "table"
+            }
+          ],
+          "optional": false,
+          "name": "io.debezium.connector.schema.Change",
+          "version": 1
+        },
+        "optional": false,
+        "field": "tableChanges"
+      }
+    ],
+    "optional": false,
+    "name": "io.debezium.connector.mysql.SchemaChangeValue",
+    "version": 1
+  },
+  "payload": {
+    "source": {
+      "version": "3.0.7.Final",
+      "connector": "mysql",
+      "name": "sync-data-connector",
+      "ts_ms": 1744254415000,
+      "snapshot": "false",
+      "db": "cdc",
+      "sequence": null,
+      "ts_us": 1744254415000000,
+      "ts_ns": 1744254415000000000,
+      "table": "all_date_types",
+      "server_id": 223344,
+      "gtid": null,
+      "file": "mysql-bin.000034",
+      "pos": 14568,
+      "row": 0,
+      "thread": null,
+      "query": null
+    },
+    "ts_ms": 1744254415327,
+    "databaseName": "cdc",
+    "schemaName": null,
+    "ddl": "ALTER TABLE `all_date_types` ADD INDEX `idx_date_col` ( `date_col`,`time_col` )",
+    "tableChanges": [
+      {
+        "type": "ALTER",
+        "id": "\"cdc\".\"all_date_types\"",
+        "table": {
+          "defaultCharsetName": "utf8mb4",
+          "primaryKeyColumnNames": [
+            "id"
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "jdbcType": -5,
+              "nativeType": null,
+              "typeName": "BIGINT",
+              "typeExpression": "BIGINT",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 1,
+              "optional": false,
+              "autoIncremented": true,
+              "generated": true,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "date_col",
+              "jdbcType": 91,
+              "nativeType": null,
+              "typeName": "DATE",
+              "typeExpression": "DATE",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 2,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "time_col",
+              "jdbcType": 92,
+              "nativeType": null,
+              "typeName": "TIME",
+              "typeExpression": "TIME",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 3,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "time6_col",
+              "jdbcType": 92,
+              "nativeType": null,
+              "typeName": "TIME",
+              "typeExpression": "TIME",
+              "charsetName": null,
+              "length": 6,
+              "scale": null,
+              "position": 4,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "datetime_col",
+              "jdbcType": 93,
+              "nativeType": null,
+              "typeName": "DATETIME",
+              "typeExpression": "DATETIME",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 5,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "datetime6_col",
+              "jdbcType": 93,
+              "nativeType": null,
+              "typeName": "DATETIME",
+              "typeExpression": "DATETIME",
+              "charsetName": null,
+              "length": 6,
+              "scale": null,
+              "position": 6,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "timestamp_col",
+              "jdbcType": 2014,
+              "nativeType": null,
+              "typeName": "TIMESTAMP",
+              "typeExpression": "TIMESTAMP",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 7,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "timestamp6_col",
+              "jdbcType": 2014,
+              "nativeType": null,
+              "typeName": "TIMESTAMP",
+              "typeExpression": "TIMESTAMP",
+              "charsetName": null,
+              "length": 6,
+              "scale": null,
+              "position": 8,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            },
+            {
+              "name": "year_col",
+              "jdbcType": 4,
+              "nativeType": null,
+              "typeName": "YEAR",
+              "typeExpression": "YEAR",
+              "charsetName": null,
+              "length": null,
+              "scale": null,
+              "position": 9,
+              "optional": true,
+              "autoIncremented": false,
+              "generated": false,
+              "comment": null,
+              "defaultValueExpression": null,
+              "enumValues": null
+            }
+          ],
+          "comment": null
+        }
+      }
+    ]
+  }
+}
