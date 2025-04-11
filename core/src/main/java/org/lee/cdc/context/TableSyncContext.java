@@ -1,6 +1,7 @@
 package org.lee.cdc.context;
 
 
+import lombok.Builder;
 import lombok.Data;
 import org.lee.cdc.core.TableInfo;
 
@@ -13,12 +14,12 @@ import org.lee.cdc.core.TableInfo;
  *
  */
 @Data
+@Builder
 public class TableSyncContext {
 
-    private String id ;
+    private final String id ;
 
-    private TableInfo tableInfo;
-
+    private final TableInfo tableInfo;
 
 
 }
