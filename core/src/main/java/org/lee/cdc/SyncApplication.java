@@ -1,28 +1,22 @@
 package org.lee.cdc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.debezium.embedded.Connect;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
-import org.apache.kafka.connect.source.SourceRecord;
-import org.lee.cdc.core.Cores;
+import org.lee.cdc.task.SyncDataTask;
+import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 @SpringBootApplication
 public class SyncApplication {
 
+    private final static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SyncApplication.class);
 
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     private static Properties loadConfig() {
 
@@ -31,9 +25,10 @@ public class SyncApplication {
         props.setProperty("connector.class", "io.debezium.connector.mysql.MySqlConnector");
         props.setProperty("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore");
         props.setProperty("offset.storage.file.filename", "D:\\Data\\storage\\offsets.dat");
-        props.setProperty("offset.flush.interval.ms", "60000");
+        props.setProperty("offset.flush.interval.ms", "1000");
         /* begin connector properties */
         props.setProperty("database.hostname", "192.168.5.4");
+        //props.setProperty("database.serverTimezone","UTC" );
         props.setProperty("database.port", "33060");
         props.setProperty("database.user", "cdc");
         props.setProperty("database.password", "leeqian");
@@ -53,21 +48,19 @@ public class SyncApplication {
 
         ApplicationContext context = application.run(args);
 
+        SyncDataTask syncDataTask = SyncDataTask.builder().build();
+
 
         Properties props = loadConfig();
-        try (DebeziumEngine<ChangeEvent<SourceRecord, SourceRecord>> engine = DebeziumEngine.create(Connect.class)
+        try (DebeziumEngine<ChangeEvent<String, String>> engine = DebeziumEngine.create(Json.class)
                 .using(props)
-                .notifying(record -> {
-                    //Cores.parse(record);
-                    //System.out.println(record);
-                   SourceRecord sourceRecord =  record.value();
-                   Cores.parse(sourceRecord);
-
-                }).build()
+                .notifying(syncDataTask
+                ).build()
         ) {
             // Run the engine asynchronously ...
 //            ExecutorService executor = Executors.newSingleThreadExecutor();
 //            executor.execute(engine);
+
 
             engine.run();
 

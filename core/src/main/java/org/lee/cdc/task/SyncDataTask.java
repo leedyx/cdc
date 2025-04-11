@@ -145,7 +145,6 @@ public class SyncDataTask implements DebeziumEngine.ChangeConsumer<ChangeEvent<S
                             }
                         }
                     }
-
                 } else {
 
                 }
